@@ -1,0 +1,178 @@
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 100% 50%;
+  }
+}
+
+.text-gradient {
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  background-image: linear-gradient(to right, #4fd1c5, #ff6347);
+  animation: gradientShift 3s linear infinite;
+}
+
+/* .heroSection{
+    height:80vh;
+    background-color: rgb(22, 78, 108); 
+    background-color: rgb(32, 97, 135);
+     background: linear-gradient(to bottom, rgba(32, 97, 135, 1), rgba(42, 117, 155, 0.8)); 
+     }  */
+.heroSection {
+  height: 85vh;
+  background: linear-gradient(
+    to right,
+    rgb(22, 78, 108),
+    rgb(27, 87, 121),
+    rgb(32, 97, 135)
+  );
+}
+
+.heroSection:hover {
+  background: linear-gradient(
+    to bottom right,
+    rgb(22, 78, 108),
+    rgb(27, 87, 121),
+    rgb(32, 97, 135)
+  );
+}
+
+.hero-button {
+  background-color: #f9ef99; /* Off-white background color */
+  color: #800000;
+}
+.serviceSection {
+  /* background: #d2eef93b; */
+  /* background-color: rgb(22, 78, 108); 
+    background-color: rgb(32, 97, 135);
+     background: linear-gradient(to bottom, rgba(32, 97, 135, 1), rgba(42, 117, 155, 0.8));  */
+}
+
+/* hero.css */
+
+@keyframes shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  10%,
+  30%,
+  50%,
+  70%,
+  90% {
+    transform: translateX(-10px);
+  }
+  20%,
+  40%,
+  60%,
+  80% {
+    transform: translateX(10px);
+  }
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes zoom {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.2);
+  }
+}
+@keyframes flip {
+  from {
+    transform: rotateY(0deg);
+  }
+  to {
+    transform: rotateY(360deg);
+  }
+}
+
+@keyframes bounce {
+  0%,
+  20%,
+  50%,
+  80%,
+  100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-30px);
+  }
+  60% {
+    transform: translateY(-15px);
+  }
+}
+
+.animated-icon {
+  transition: transform 0.3s ease;
+}
+
+.animated-icon:hover {
+  cursor: pointer;
+}
+
+.web-animated-icon:hover {
+  animation: rotate 3s both infinite;
+  transform: scale(1.1);
+}
+/* hero.css */
+
+.ai-animated-icon:hover {
+  animation: zoom 0.3s forwards;
+}
+
+.da-animated-icon:hover {
+  animation: zoom 0.3s forwards;
+}
+
+/* hero.css */
+
+.android-animated-icon:hover {
+  animation: flip 1.5s infinite;
+  transform: scale(1.1);
+}
+
+.ml-animated-icon:hover {
+  animation: flip 2s infinite;
+  transform: scale(1.1);
+}
+
+@media (max-width: 768px)  {
+  .ml-animated-icon {
+    animation: flip 2s alternate;
+  }
+}
+
+.db-animated-icon:hover {
+  animation: bounce 1.5s linear infinite;
+}
+
+
+.ds-animated-icon:hover {
+  animation: shake 8s infinite;
+}
+
+
+@media only screen and (max-width: 767px) {
+  .service-card{
+    height: auto;
+  }
+}
+
+@media only screen and (min-width: 768px) {
+  .service-card{
+    height: 350px;
+  }
+}

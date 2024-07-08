@@ -1,0 +1,21 @@
+/* Common styles */
+.touch-effect {
+  transition: background-color 0.3s, transform 0.3s;
+}
+
+/* Hover effect for desktop */
+.touch-effect:hover {
+  transform: scale(1.05);
+}
+
+/* Active state for mobile */
+.touch-effect:active {
+  background-color: rgba(0, 0, 0, 0.1);
+  transform: scale(0.98);
+}
+
+/* Focus state for accessibility */
+.touch-effect:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.6);
+}
