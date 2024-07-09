@@ -4,15 +4,16 @@ import axios from 'axios';
 
 const ProjectsSection = () => {
   const [projects, setProjects] = useState([]);
+  const [error, setError] = useState(false);
 
   useEffect(() => {
-    const basePath = 'http://localhost:3000';
+    const basePath = process.env.VITE_backendURL;
     const fetchProjects = async () => {
       try {
         const response = await axios.get(`${basePath}/api/projects`);
         setProjects(response.data);
       } catch (error) {
-        console.log("error", error);
+        setError(true);
       }
     };
 
@@ -26,7 +27,12 @@ const ProjectsSection = () => {
           <h2 className="text-3xl md:text-4xl font-bold">Our Projects</h2>
           <p className="text-lg mt-2">Take a look at some of our recent work</p>
         </div>
-        <div className="flex flex-col items-center gap-4 justify-center sm:flex-wrap -mx-4">
+        {error && (
+          <div className="text-center text-lg font-semibold m-4 p-2 text-red-500">
+            Cannot load projects at this time
+          </div>
+        )}
+        { projects.length>0 ? (<div className="flex flex-col items-center gap-4 justify-center sm:flex-wrap -mx-4">
           {projects.map((project) => (
             <div key={uuidv4()} className="w-full md:w-2/3 lg:w-1/2 px-4 mb-8">
               <div className="bg-white rounded-lg p-6 shadow-lg flex flex-col justify-between h-full transition transform hover:scale-105">
@@ -43,7 +49,7 @@ const ProjectsSection = () => {
               </div>
             </div>
           ))}
-        </div>
+        </div>):( !error && <div className='text-center font-medium m-4 p-2'>No projects found</div>)}
       </div>
     </section>
   );

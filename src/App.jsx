@@ -5,10 +5,9 @@ import About from './components/About';
 import Contact from './components/Contact';
 import Header from './components/header';
 import Footer from './components/footer';
-
 const App = () => {
   return (
-    // <Router>
+    
       <div>
         
         <BrowserRouter>

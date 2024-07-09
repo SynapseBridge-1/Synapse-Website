@@ -13,7 +13,7 @@ const ContactUs = () => {
   const [loading, setLoading] = useState(false); // State to manage loading
 
   const handleSubmit = async (e) => {
-    const basePath = "http://localhost:3000";
+    const basePath = process.env.VITE_backendURL;
     e.preventDefault();
     setLoading(true); // Set loading to true when the form is submitted
 
@@ -29,15 +29,8 @@ const ContactUs = () => {
         toast.error("Failed to send message.");
       }
     } catch (error) {
-      console.error("Error sending message:", error);
       toast.error("Failed to send message.");
     }
-
-    // setFormData({
-    //   name: "",
-    //   email: "",
-    //   message: "",
-    // });
     setLoading(false); // Set loading to false when the submission is complete
   };
 

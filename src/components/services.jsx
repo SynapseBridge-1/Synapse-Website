@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
 import axios from "axios";
@@ -10,61 +11,99 @@ import {
   FaDatabase,
   FaChartLine,
   FaFlask,
+  FaCloud,
+  FaLock,
+  FaNetworkWired,
+  FaServer,
+  FaPalette,
+  FaCode,
+  FaTerminal,
+  FaLaptop,
+  FaCodeBranch,
 } from "react-icons/fa";
-import "../assets/hero.css";
-
+import "../assets/css/hero.css";
 const ServicesSection = () => {
   const [services, setServices] = useState([]);
-
+  const [error, setError] = useState(false);
   useEffect(() => {
-    const basePath = "http://localhost:3000";
+    // const basePath = "http://localhost:3000";
+    const basePath = process.env.VITE_backendURL;
+
     const fetchServices = async () => {
       try {
         const response = await axios.get(`${basePath}/api/services`);
         setServices(response.data);
-        console.log(response.data);
+      
       } catch (error) {
-        console.log("error", error);
+        
+        setError(true);
       }
     };
 
     fetchServices();
   }, []);
 
-  // Mapping icons to services (you can adjust this as needed)
-  const icons = {
-    "Web Development": (
-      <FaGlobe className="inline-block mr-2 text-5xl web-animated-icon animated-icon" />
-    ),
-    "Android Development": (
-      <FaLaptopCode className="inline-block mr-2 text-5xl animated-icon android-animated-icon" />
-    ),
-    "Data Analytics": (
-      <FaChartLine className="inline-block mr-2 text-5xl da-animated-icon animated-icon" />
-    ),
-    Databases: (
-      <FaDatabase className="inline-block mr-2 text-5xl db-animated-icon animated-icon" />
-    ),
-    "AI Development": (
-      <FaRobot className="inline-block mr-2 text-5xl ai-animated-icon animated-icon" />
-    ),
-    "ML Development": (
-      <FaBrain className="inline-block mr-2 text-5xl ml-animated-icon animated-icon" />
-    ),
-    "Data Science": (
-      <FaFlask className="inline-block mr-2 text-5xl ds-animated-icon animated-icon" />
-    ),
+  const cleanString = (inputString) => {
+    // Remove spaces and non-alphabetic characters using regular expressions
+    let cleaned = inputString.replace(/\s+/g, '').replace(/[^a-zA-Z]/g, '');
+    // Convert all alphabetic characters to lowercase
+    cleaned = cleaned.toLowerCase();
+    return cleaned;
   };
 
+  const icons = {
+    "webdevelopment": <FaGlobe className="inline-block mr-2 text-5xl rot-animated-icon animated-icon" />,
+    "androiddevelopment": <FaLaptopCode className="inline-block mr-2 text-5xl animated-icon flip-animated-icon" />,
+    "dataanalytics": <FaChartLine className="inline-block mr-2 text-5xl zoom-animated-icon animated-icon" />,
+    "databases": <FaDatabase className="inline-block mr-2 text-5xl bounce-animated-icon animated-icon" />,
+    "aidevelopment": <FaRobot className="inline-block mr-2 text-5xl zoom-animated-icon animated-icon" />,
+    "mldevelopment": <FaBrain className="inline-block mr-2 text-5xl flip-animated-icon animated-icon" />,
+    "datascience": <FaFlask className="inline-block mr-2 text-5xl shake-animated-icon animated-icon" />,
+    "cloudcomputing": <FaCloud className="inline-block mr-2 text-5xl zoom-animated-icon animated-icon"/>,
+    "networking": <FaNetworkWired className="inline-block mr-2 text-5xl zoom-animated-icon animated-icon"/>,
+     "security": <FaLock className="inline-block mr-2 text-5xl bounce-animated-icon animated-icon"/>,
+     "devops": <FaServer className="inline-block mr-2 text-5xl shake-animated-icon animated-icon"/>,
+     "uiux": <FaPalette className="inline-block mr-2 text-5xl flip-animated-icon animated-icon"/>, 
+  };
+
+  const fallbackIcons = [
+  
+    <FaCode className="inline-block mr-2 text-5xl flip-animated-icon animated-icon " />,
+    <FaCog className="inline-block mr-2 text-5xl rot-animated-icon animated-icon" />,
+    <FaTerminal className="inline-block mr-2 text-5xl zoom-animated-icon animated-icon" />,
+    <FaLaptop className="inline-block mr-2 text-5xl rot-animated-icon animated-icon" />,
+    <FaCodeBranch className="inline-block mr-2 text-5xl rot-animated-icon animated-icon" />,
+  ];
+
+  const fallbackIconsColor = [
+  
+    " text-lime-500 ",
+    " text-blue-700 ",
+    "text-green-600 ",
+    " text-red-400 ",
+    "text-indigo-800 ",
+    "text-orange-800 ",
+    "text-teal-400 ",
+  ];
+
   const colours = {
-    "Web Development": "text-green-600 ",
-    "Android Development": "text-lime-500 ",
-    "AI Development": "text-red-400 ",
-    "ML Development": "text-yellow-400 ",
-    "Data Analytics": "text-indigo-800 ",
-    "Data Science": "text-orange-800 ",
-    "Databases": "text-teal-400 ",
-    
+    "webdevelopment": "text-green-600 ",
+    "androiddevelopment": "text-lime-500 ",
+    "aidevelopment": "text-red-400 ",
+    "mldevelopment": "text-yellow-400 ",
+    "dataanalytics": "text-indigo-800 ",
+    "datascience": "text-orange-800 ",
+    "databases": "text-teal-400 ",
+  };
+
+  const getRandomFallbackIcon = () => {
+    const randomIndex = Math.floor(Math.random() * fallbackIcons.length);
+    return fallbackIcons[randomIndex];
+  };
+
+  const getRandomFallbackIconColor = () => {
+    const randomIndex = Math.floor(Math.random() * fallbackIconsColor.length);
+    return fallbackIconsColor[randomIndex];
   };
 
   return (
@@ -76,26 +115,41 @@ const ServicesSection = () => {
           </h2>
           <p className="text-lg mt-2">Discover what we can do for you</p>
         </div>
-        <div className="flex flex-wrap -mx-4">
-          {services.map((service) => (
-            <div key={uuidv4()} className="w-full md:w-1/2 lg:w-1/3 px-4 mb-8">
-              <div className="service-card bg-white shadow-md rounded-xl p-6 flex flex-col justify-start gap-4 ">
-                {/* Fixed height for medium and larger screens */}
-                <div className={`icon text-center ${colours[service.name]}`}>
-                  {icons[service.name] || (
-                    <FaCog className="inline-block mr-2 text-5xl" />
-                  )}
+        {error && (
+          <div className="text-center text-lg font-semibold m-4 p-2 text-red-500">
+            Cannot load services at this time
+          </div>
+        )}
+        { services.length>0 ?( <div className="flex flex-wrap -mx-4">
+          {services.map((service) => {
+            let cleanedServiceName = cleanString(service.name);
+            let icon = icons[cleanedServiceName];
+            let color = colours[cleanedServiceName];
+            if (!icon) {
+              icon = getRandomFallbackIcon();
+            }
+            if (!color)
+            {
+              color = getRandomFallbackIconColor();
+            }
+
+            return (
+              <div key={uuidv4()} className="w-full md:w-1/2 lg:w-1/3 px-4 mb-8">
+                <div className="service-card bg-white shadow-md rounded-xl p-6 flex flex-col justify-start gap-4 ">
+                  <div className={`icon text-center ${color}`}>
+                    {icon}
+                  </div>
+                  <h3 className={`text-center text-xl ${color} font-bold mb-2`}>
+                    {service.name}
+                  </h3>
+                  <p className="text-lg text-center grow-1 ">
+                    {service.description}
+                  </p>
                 </div>
-                <h3 className={`text-center text-xl ${colours[service.name]} font-bold mb-2`}>
-                  {service.name}
-                </h3>
-                <p className="text-lg text-center grow-1 ">
-                  {service.description}
-                </p>
               </div>
-            </div>
-          ))}
-        </div>
+            );
+          })}
+        </div>): ( !error && <div className='text-center font-medium m-4 p-2'>No services found</div>)}
       </div>
     </section>
   );

@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { scrollToServices } from "./scroll_toServices";
 import { scrollToProjects } from "./scroll_toProjects";
+import { FaXTwitter } from "react-icons/fa6";
 const Footer = () => {
   const navigate = useNavigate();
 
@@ -90,7 +91,7 @@ const Footer = () => {
             </h3>
             <div className="flex space-x-4">
               <a
-                href="https://www.linkedin.com"
+                href="https://www.linkedin.com/company/synapsebridge"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="hover:text-blue-500"
@@ -115,6 +116,15 @@ const Footer = () => {
               >
                 <FaFacebook size="2em" />
                 <p>Facebook</p>
+              </a>
+              <a
+                href="https://twitter.com/Synapsebridge_"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:scale-105"
+              >
+                <FaXTwitter size="2em" />
+                <p className="text-center">X</p>
               </a>
             </div>
           </div>

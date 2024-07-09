@@ -14,13 +14,6 @@
   background-image: linear-gradient(to right, #4fd1c5, #ff6347);
   animation: gradientShift 3s linear infinite;
 }
-
-/* .heroSection{
-    height:80vh;
-    background-color: rgb(22, 78, 108); 
-    background-color: rgb(32, 97, 135);
-     background: linear-gradient(to bottom, rgba(32, 97, 135, 1), rgba(42, 117, 155, 0.8)); 
-     }  */
 .heroSection {
   height: 85vh;
   background: linear-gradient(
@@ -44,12 +37,7 @@
   background-color: #f9ef99; /* Off-white background color */
   color: #800000;
 }
-.serviceSection {
-  /* background: #d2eef93b; */
-  /* background-color: rgb(22, 78, 108); 
-    background-color: rgb(32, 97, 135);
-     background: linear-gradient(to bottom, rgba(32, 97, 135, 1), rgba(42, 117, 155, 0.8));  */
-}
+
 
 /* hero.css */
 
@@ -123,55 +111,49 @@
   cursor: pointer;
 }
 
-.web-animated-icon:hover {
+.rot-animated-icon:hover {
   animation: rotate 3s both infinite;
   transform: scale(1.1);
 }
 /* hero.css */
 
-.ai-animated-icon:hover {
+.flip-animated-icon:hover {
   animation: zoom 0.3s forwards;
 }
 
-.da-animated-icon:hover {
+.zoom-animated-icon:hover {
   animation: zoom 0.3s forwards;
 }
 
 /* hero.css */
 
-.android-animated-icon:hover {
+.flip-animated-icon:hover {
   animation: flip 1.5s infinite;
   transform: scale(1.1);
 }
 
-.ml-animated-icon:hover {
+/* .ml-animated-icon:hover {
   animation: flip 2s infinite;
   transform: scale(1.1);
-}
+} */
 
-@media (max-width: 768px)  {
-  .ml-animated-icon {
-    animation: flip 2s alternate;
-  }
-}
-
-.db-animated-icon:hover {
+.bounce-animated-icon:hover {
   animation: bounce 1.5s linear infinite;
 }
 
 
-.ds-animated-icon:hover {
+.shake-animated-icon:hover {
   animation: shake 8s infinite;
 }
 
 
-@media only screen and (max-width: 767px) {
+@media only screen and (max-width: 770px) {
   .service-card{
     height: auto;
   }
 }
 
-@media only screen and (min-width: 768px) {
+@media only screen and (min-width: 771px) {
   .service-card{
     height: 350px;
   }

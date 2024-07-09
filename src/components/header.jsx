@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import '../assets/header.css'; // Ensure your CSS file path is correct
+import '../assets/css/header.css'; // Ensure your CSS file path is correct
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
