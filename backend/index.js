@@ -1,22 +1,16 @@
 // Load environment variables from .env file
 import dotenv from "dotenv";
-dotenv.config({ path: "development.env" });
+dotenv.config({ path: "./.env.development" });
 
 import express from "express";
 import { MongoClient } from "mongodb";
 import cors from "cors";
-import multer from "multer";
 import nodemailer from "nodemailer";
-import { fileURLToPath } from "url";
-import path, { dirname } from "path";
-import bcrypt from "bcrypt";
-import fs from "fs";
 import rateLimit from "express-rate-limit";
 import { body, validationResult } from "express-validator";
 
 // Get the current file path (ES6 module way)
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+
 
 const app = express();
 
@@ -34,9 +28,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Serve static files for the addProject route
-app.use("/api/addProject", (req, res, next) => {
-  express.static("../src/assets")(req, res, next);
-});
+// app.use("/api/addProject", (req, res, next) => {
+//   express.static("../src/assets")(req, res, next);
+// });
 
 // Rate limiter middleware
 const limiter = rateLimit({
@@ -64,80 +58,6 @@ const contactValidationRules = [
   body("message").trim().notEmpty().withMessage("Message is required").escape(),
 ];
 
-const loginValidationRules = [
-  body("adminUsername")
-    .notEmpty()
-    .withMessage("Username is required")
-    .trim()
-    .escape(),
-  body("adminPassword")
-    .notEmpty()
-    .withMessage("Password is required")
-    .isLength({ min: 8 })
-    .withMessage("Password must be at least 8 characters")
-    .matches("[0-9]")
-    .withMessage("Password must contain a number")
-    .matches("[A-Z]")
-    .withMessage("Password must contain a capital letter")
-    .trim()
-    .escape(),
-];
-
-const addProjectValidationRules = [
-  body("name")
-    .trim()
-    .notEmpty()
-    .withMessage("Project name is required")
-    .escape(),
-  body("description")
-    .trim()
-    .notEmpty()
-    .withMessage("Project description is required")
-    .escape(),
-];
-
-const addServiceValidationRules = [
-  body("name")
-    .trim()
-    .notEmpty()
-    .withMessage("Service name is required")
-    .escape(),
-  body("description")
-    .trim()
-    .notEmpty()
-    .withMessage("Service description is required")
-    .escape(),
-];
-
-const deleteProjectValidationRules = [
-  body("name")
-    .trim()
-    .notEmpty()
-    .withMessage("Project name is required")
-    .escape(),
-];
-
-const deleteServiceValidationRules = [
-  body("name")
-    .trim()
-    .notEmpty()
-    .withMessage("Service name is required")
-    .escape(),
-];
-
-const loginAdminValidationRules = [
-  body("adminUsername")
-    .trim()
-    .notEmpty()
-    .withMessage("Username is required")
-    .escape(),
-  body("adminPassword")
-    .trim()
-    .notEmpty()
-    .withMessage("Password is required")
-    .escape(),
-];
-
 // Create a new MongoClient instance
 const client = new MongoClient(databaseURI);
 
@@ -150,47 +70,6 @@ async function connectToDatabase() {
     const db = client.db("synapseBridge");
     const servicesCollection = db.collection("services");
     const projectsCollection = db.collection("projects");
-    const adminCollection = db.collection("admin");
-
-    // Set up storage engine for Multer
-    const storage = multer.diskStorage({
-      destination: function (req, file, cb) {
-        cb(null, process.env.projectImage); // Adjust the destination path as necessary
-      },
-      filename: function (req, file, cb) {
-        cb(
-          null,
-          path.basename(file.originalname, path.extname(file.originalname)) +
-            "-" +
-            Date.now() +
-            path.extname(file.originalname)
-        );
-      },
-    });
-
-    // Function to check file type
-    function checkFileType(file, cb) {
-      const filetypes = /jpeg|jpg|png|gif/;
-      const extname = filetypes.test(
-        path.extname(file.originalname).toLowerCase()
-      );
-      const mimetype = filetypes.test(file.mimetype);
-
-      if (mimetype && extname) {
-        return cb(null, true);
-      } else {
-        cb("Error: Images Only!");
-      }
-    }
-
-    // Initialize Multer with storage engine and file filter
-    const upload = multer({
-      storage: storage,
-      limits: { fileSize: 1000000 }, // 1MB file size limit
-      fileFilter: function (req, file, cb) {
-        checkFileType(file, cb);
-      },
-    }).single("image");
 
     // Set up nodemailer transporter
     const transporter = nodemailer.createTransport({
@@ -211,6 +90,23 @@ async function connectToDatabase() {
       next();
     };
 
+    // Route to get all projects with embedded images
+    app.get("/api/projects", async (req, res) => {
+      try {
+        const projects = await projectsCollection.find({}).toArray();
+
+        // Convert each project's binary data to base64 for sending over JSON
+        const projectsWithImages = projects.map((project) => ({
+          ...project,
+          imageData: project.imageData.toString("base64"),
+        }));
+
+        res.status(200).send(projectsWithImages);
+      } catch (error) {
+        res.status(500).json({ message: "Error retrieving projects" });
+      }
+    });
+
     // Route to get all services
     app.get("/api/services", async (req, res) => {
       try {
@@ -219,85 +115,11 @@ async function connectToDatabase() {
           .project({ _id: 0, name: 1, description: 1 }) // Include name and description
           .toArray();
         res.status(200).json(services);
+        // res.send(services);
       } catch (error) {
         res.status(500).json({ message: "Error retrieving services" });
       }
     });
-
-    // Route to get all projects
-    app.get("/api/projects", async (req, res) => {
-      try {
-        const projects = await projectsCollection
-          .find({})
-          .project({ _id: 0, name: 1, description: 1, imagePath: 1 }) // Include name, description, and imagePath
-          .toArray();
-        res.status(200).json(projects);
-      } catch (error) {
-        res.status(500).json({ message: "Error retrieving projects" });
-      }
-    });
-
-    // Route to get all projects for admin without imagePath
-    app.get("/api/admin/projects", async (req, res) => {
-      try {
-        const projects = await projectsCollection
-          .find({}, { imagePath: 0 })
-          .project({ _id: 0, name: 1, description: 1 }) // Include name and description
-          .toArray();
-        res.status(200).json(projects);
-      } catch (error) {
-        res.status(500).json({ message: "Error retrieving projects" });
-      }
-    });
-
-    // Route to get all services for admin
-    app.get("/api/admin/services", async (req, res) => {
-      try {
-        const services = await servicesCollection
-          .find({})
-          .project({ _id: 0, name: 1, description: 1 }) // Include name and description
-          .toArray();
-        res.status(200).json(services);
-      } catch (error) {
-        res.status(500).json({ message: "Error retrieving services" });
-      }
-    });
-
-    // Route to handle project addition with file upload
-    app.post(
-      "/api/addProject",
-      upload,
-      addProjectValidationRules,
-      validate,
-      async (req, res) => {
-        const { name, description } = req.body;
-
-        if (!req.file) {
-          return res.status(400).json({ msg: "No file selected!" });
-        }
-
-        const imagePath = path.join(
-          process.env.projectImage,
-          req.file.filename
-        );
-        const newProject = {
-          name,
-          description,
-          imagePath,
-        };
-
-        try {
-          const result = await projectsCollection.insertOne(newProject);
-          if (result.acknowledged) {
-            res.status(200).json({ msg: "Project added successfully!" });
-          } else {
-            res.status(400).json({ msg: "Failed to add Project" });
-          }
-        } catch (err) {
-          res.status(400).json({ msg: err.message });
-        }
-      }
-    );
 
     // Route to handle contact form submission
     app.post(
@@ -331,187 +153,6 @@ async function connectToDatabase() {
       }
     );
 
-    // Route to handle service addition
-    app.post(
-      "/api/addService",
-      addServiceValidationRules,
-      validate,
-      async (req, res) => {
-        const { name, description } = req.body;
-
-        try {
-          const result = await servicesCollection.insertOne({
-            name,
-            description,
-          });
-          if (result.acknowledged) {
-            res.status(200).json({ msg: "Service added successfully!" });
-          } else {
-            res.status(400).json({ msg: "Failed to add Service" });
-          }
-        } catch (err) {
-          res.status(400).json({ msg: err.message });
-        }
-      }
-    );
-
-    // Route to handle project deletion
-    // Route to handle project deletion
-    app.delete(
-      "/api/deleteProject",
-      deleteProjectValidationRules,
-      validate,
-      async (req, res) => {
-        const { name } = req.body;
-
-        try {
-          // Find the project to get the file path
-          const project = await projectsCollection.findOne({ name });
-          if (!project) {
-            return res.status(404).json({ msg: "Project not found!" });
-          }
-
-          // Use the imagePath from the project document as a relative path
-          const filePath = path.resolve(__dirname, project.imagePath);
-
-          // Delete the project image file
-          fs.unlink(filePath, async (err) => {
-            if (err) {
-              return res.status(500).json({ msg: "File deletion failed!" });
-            }
-
-            // Delete the project document from the database
-            const result = await projectsCollection.deleteOne({ name });
-            if (result.deletedCount === 1) {
-              res.status(200).json({ msg: "Project deleted successfully!" });
-            } else {
-              res.status(404).json({ msg: "Project not found!" });
-            }
-          });
-        } catch (err) {
-          res.status(400).json({ msg: err.message });
-        }
-      }
-    );
-
-    // Route to handle service deletion
-    app.delete(
-      "/api/deleteService",
-      deleteServiceValidationRules,
-      validate,
-      async (req, res) => {
-        const { name } = req.body;
-
-        try {
-          const result = await servicesCollection.deleteOne({ name });
-          if (result.deletedCount === 1) {
-            res.status(200).json({ msg: "Service deleted successfully!" });
-          } else {
-            res.status(404).json({ msg: "Service not found!" });
-          }
-        } catch (err) {
-          res.status(400).json({ msg: err.message });
-        }
-      }
-    );
-    // POST /api/setup-admin: Endpoint to set up or update admin credentials
-    app.post(
-      "/api/setup-admin",
-      loginValidationRules,
-      validate,
-      async (req, res) => {
-        // Extract the admin username and password from the request body
-        const { adminUsername, adminPassword } = req.body;
-
-        try {
-          // Retrieve the pepper value from environment variables
-          const PEPPER = process.env.PEPPER;
-
-          // Combine the password with the pepper
-          const pepperedPassword = adminPassword + PEPPER;
-
-          // Define the number of salt rounds for hashing
-          const saltRounds = 10;
-
-          // Hash the peppered password with bcrypt
-          const hashedPassword = await bcrypt.hash(
-            pepperedPassword,
-            saltRounds
-          );
-
-          // Create an admin object with the hashed password
-          const admin = {
-            username: adminUsername,
-            password: hashedPassword,
-          };
-
-          // Upsert the admin credentials in the MongoDB collection
-          const result = await adminCollection.updateOne(
-            { username: adminUsername },
-            { $set: admin },
-            { upsert: true }
-          );
-
-          // Log the result of the upsert operation
-
-          // Send a success response
-          res.status(200).json({ message: "Admin password setup successful" });
-        } catch (error) {
-          // Log and send an error response in case of any issues
-
-          res.status(500).json({ error: "Internal server error" });
-        }
-      }
-    );
-
-    // Route to handle admin login
-    // POST /api/login-admin: Endpoint to log in as admin
-    app.post(
-      "/api/login-admin",
-      loginAdminValidationRules,
-      validate,
-      async (req, res) => {
-        // Extract the admin username and password from the request body
-        const { adminUsername, adminPassword } = req.body;
-
-        try {
-          // Retrieve the pepper value from environment variables
-          const PEPPER = process.env.PEPPER;
-
-          // Find the admin user in the MongoDB collection
-          const admin = await adminCollection.findOne({
-            username: adminUsername,
-          });
-          if (!admin) {
-            // Send a 401 Unauthorized response if the admin user is not found
-            return res
-              .status(401)
-              .json({ msg: "Invalid username or password" });
-          }
-
-          // Combine the provided password with the pepper
-          const pepperedPassword = adminPassword + PEPPER;
-
-          // Compare the peppered password with the stored hashed password
-          const isPasswordValid = await bcrypt.compare(
-            pepperedPassword,
-            admin.password
-          );
-
-          if (isPasswordValid) {
-            // Send a success response if the password is valid
-            res.status(200).json({ msg: "Login successful" });
-          } else {
-            // Send a 401 Unauthorized response if the password is invalid
-            res.status(401).json({ msg: "Invalid username or password" });
-          }
-        } catch (error) {
-          // Log and send an error response in case of any issues
-
-          res.status(500).json({ error: "Internal server error" });
-        }
-      }
-    );
     // Start the server and listen on the specified port
     app.listen(port, () => {});
   } catch (err) {
