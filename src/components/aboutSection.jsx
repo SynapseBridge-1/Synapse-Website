@@ -4,7 +4,7 @@ const AboutSection = () => {
   return (
     <section
       className="relative bg-blue-100 text-blue-900 py-20"
-      style={{ backgroundImage: "url('../../public/images/back.png')", backgroundSize: 'cover', backgroundPosition: 'center' }}
+      style={{ backgroundImage: "url('../../images/back.png')", backgroundSize: 'cover', backgroundPosition: 'center' }}
     >
       <div className="absolute inset-0 bg-gray-900 opacity-50"></div> {/* Overlay */}
       <div className="relative container mx-auto px-4">

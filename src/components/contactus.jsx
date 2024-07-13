@@ -13,7 +13,7 @@ const ContactUs = () => {
   const [loading, setLoading] = useState(false); // State to manage loading
 
   const handleSubmit = async (e) => {
-    const basePath = process.env.VITE_backendURL;
+    const basePath = import.meta.env.VITE_backendURL;
     e.preventDefault();
     setLoading(true); // Set loading to true when the form is submitted
 

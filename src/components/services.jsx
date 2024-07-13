@@ -20,19 +20,31 @@ import {
   FaTerminal,
   FaLaptop,
   FaCodeBranch,
+  FaMobileAlt,
 } from "react-icons/fa";
 import "../assets/css/hero.css";
 const ServicesSection = () => {
   const [services, setServices] = useState([]);
   const [error, setError] = useState(false);
+
+  const LOCAL_STORAGE_KEY = 'services';
+  const LAST_UPDATED_KEY = 'lastUpdatedServices';
+  const FRESHNESS_THRESHOLD = 0.5 * 60 * 1000;
+
   useEffect(() => {
-    // const basePath = "http://localhost:3000";
-    const basePath = process.env.VITE_backendURL;
+   
+    const basePath = import.meta.env.VITE_backendURL;
 
     const fetchServices = async () => {
       try {
         const response = await axios.get(`${basePath}/api/services`);
-        setServices(response.data);
+        if(response.status === 200)
+          {
+            
+            setServices(response.data);
+            localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(response.data));
+            localStorage.setItem(LAST_UPDATED_KEY, new Date().toISOString()); // Store as ISO string
+          }
       
       } catch (error) {
         
@@ -40,7 +52,27 @@ const ServicesSection = () => {
       }
     };
 
-    fetchServices();
+    const loadServices = () => {
+      const storedData = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY));
+      const lastUpdated = localStorage.getItem(LAST_UPDATED_KEY);
+      const currentTime = Date.now();
+
+      // Check if local storage is empty
+      if (!storedData || !lastUpdated) {
+        fetchServices(); // Fetch from server if local storage is empty
+      } else {
+        const lastUpdatedTimestamp = new Date(lastUpdated).getTime();
+        const isDataFresh = storedData && (currentTime - lastUpdatedTimestamp < FRESHNESS_THRESHOLD);
+
+        if (isDataFresh) {
+          setServices(storedData); // Use local storage data
+        } else {
+          fetchServices(storedData); // Fetch from server if data is stale
+        }
+      }
+    };
+
+    loadServices();
   }, []);
 
   const cleanString = (inputString) => {
@@ -64,6 +96,7 @@ const ServicesSection = () => {
      "security": <FaLock className="inline-block mr-2 text-5xl bounce-animated-icon animated-icon"/>,
      "devops": <FaServer className="inline-block mr-2 text-5xl shake-animated-icon animated-icon"/>,
      "uiux": <FaPalette className="inline-block mr-2 text-5xl flip-animated-icon animated-icon"/>, 
+     "mobiledevelopment":<FaMobileAlt className="inline-block mr-2 text-5xl flip-animated-icon animated-icon"/>,
   };
 
   const fallbackIcons = [
@@ -88,7 +121,7 @@ const ServicesSection = () => {
 
   const colours = {
     "webdevelopment": "text-green-600 ",
-    "androiddevelopment": "text-lime-500 ",
+    "mobiledevelopment": "text-lime-500 ",
     "aidevelopment": "text-red-400 ",
     "mldevelopment": "text-yellow-400 ",
     "dataanalytics": "text-indigo-800 ",
@@ -121,7 +154,7 @@ const ServicesSection = () => {
           </div>
         )}
         { services.length>0 ?( <div className="flex flex-wrap -mx-4">
-          {services.map((service) => {
+          { services.map((service) => {
             let cleanedServiceName = cleanString(service.name);
             let icon = icons[cleanedServiceName];
             let color = colours[cleanedServiceName];
@@ -135,7 +168,7 @@ const ServicesSection = () => {
 
             return (
               <div key={uuidv4()} className="w-full md:w-1/2 lg:w-1/3 px-4 mb-8">
-                <div className="service-card bg-white shadow-md rounded-xl p-6 flex flex-col justify-start gap-4 ">
+                <div className="service-card bg-white shadow-md rounded-xl p-6 flex flex-col justify-start gap-4 hover:scale-105 hover:cursor-pointer">
                   <div className={`icon text-center ${color}`}>
                     {icon}
                   </div>

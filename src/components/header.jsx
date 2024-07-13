@@ -15,7 +15,7 @@ const Header = () => {
         {/* Logo */}
         <div className="flex items-center">
           <img
-            src="../../public/images/logo.jpg"
+            src="../../images/logo.jpg"
             alt="Synapse Bridge Logo"
             className="h-16 w-auto mx-2 border border-black rounded-full"
             style={{ maxHeight: '4rem' }} // Adjust the max height of the image
