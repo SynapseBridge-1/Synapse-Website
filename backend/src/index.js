@@ -1,5 +1,5 @@
 // Load environment variables from .env file
-import dotenv from "dotenv";
+// import dotenv from "dotenv";
 // dotenv.config({ path: "./.env.development" });
 
 import express from "express";
