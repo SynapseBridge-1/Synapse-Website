@@ -4,19 +4,20 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "start": "node dist/index.js", 
+    "start": "node dist/index.cjs",
     "build": "webpack",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },
   "dependencies": {
+    "@babel/runtime": "^7.24.8",
     "axios": "^1.7.2",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "express-rate-limit": "^7.3.1",
     "express-validator": "^7.1.0",
-    "mongodb": "^6.7.0",
+    "mongodb": "^6.8.0",
     "nodemailer": "^6.9.14",
     "nodemon": "^3.1.4",
     "react": "^18.2.0",
@@ -27,6 +28,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.24.8",
+    "@babel/plugin-transform-runtime": "^7.24.7",
     "@babel/preset-env": "^7.24.8",
     "@babel/preset-react": "^7.24.7",
     "@types/react": "^18.2.66",

@@ -4,13 +4,14 @@ import path from 'path';
 // Use fileURLToPath and path to define __dirname
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
 export default {
   entry: './src/index.js', // Your entry file
   target: 'node',
   mode: 'production',
   output: {
     path: path.resolve(__dirname, 'dist'),
-    filename: 'index.js',
+    filename: 'index.cjs',
     libraryTarget: 'commonjs2', // Ensures output is compatible with Node.js
   },
   module: {
@@ -30,4 +31,8 @@ export default {
   resolve: {
     extensions: ['.js'],
   },
+  externals: {
+    // Exclude node modules from being bundled
+    'express': 'commonjs express'
+  }
 };
