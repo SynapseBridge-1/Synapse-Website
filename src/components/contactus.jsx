@@ -14,11 +14,12 @@ const ContactUs = () => {
 
   const handleSubmit = async (e) => {
     const basePath = import.meta.env.VITE_backendURL;
+    const port=import.meta.env.VITE_PORT;
     e.preventDefault();
     setLoading(true); // Set loading to true when the form is submitted
 
     try {
-      const response = await axios.post(`${basePath}/api/contact`, formData, {
+      const response = await axios.post(`${basePath}:${port}/api/contact`, formData, {
         headers: {
           "Content-Type": "application/json",
         },

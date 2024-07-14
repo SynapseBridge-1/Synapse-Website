@@ -1,3 +1,6 @@
+import dotenv from "dotenv";
+dotenv.config({ path: ".env.development" });
+
 import express from "express";
 import { MongoClient } from "mongodb";
 import cors from "cors";

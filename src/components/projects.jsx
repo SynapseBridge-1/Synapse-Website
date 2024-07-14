@@ -8,16 +8,17 @@ const ProjectsSection = () => {
   
   const LOCAL_STORAGE_KEY = 'projects';
   const LAST_UPDATED_KEY = 'lastUpdated';
-  const FRESHNESS_THRESHOLD = 0.5 * 60 * 1000; // 5 minutes in milliseconds
+  const FRESHNESS_THRESHOLD = 10 * 60 * 1000; // 10 minutes in milliseconds
 
   useEffect(() => {
     
     const basePath = import.meta.env.VITE_backendURL;
+    const port=import.meta.env.VITE_PORT;
     const fetchProjects = async (storedData) => {
       try {
         // const lastUpdated = localStorage.getItem(LAST_UPDATED_KEY);
         
-        const response = await axios.get(`${basePath}/api/projects`);
+        const response = await axios.get(`${basePath}:${port}/api/projects`);
        
         
         // Update state and local storage
@@ -69,6 +70,7 @@ const ProjectsSection = () => {
         {error && (
           <div className="text-center text-lg font-semibold m-4 p-2 text-red-500">
             Cannot load projects at this time
+            <p className='text-center'>reload page</p>
           </div>
         )}
         {projects.length > 0 ? (

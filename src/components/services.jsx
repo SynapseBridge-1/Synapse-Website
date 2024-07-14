@@ -29,15 +29,15 @@ const ServicesSection = () => {
 
   const LOCAL_STORAGE_KEY = 'services';
   const LAST_UPDATED_KEY = 'lastUpdatedServices';
-  const FRESHNESS_THRESHOLD = 0.5 * 60 * 1000;
+  const FRESHNESS_THRESHOLD = 10 * 60 * 1000;
 
   useEffect(() => {
    
     const basePath = import.meta.env.VITE_backendURL;
-
+    const port=import.meta.env.VITE_PORT;
     const fetchServices = async () => {
       try {
-        const response = await axios.get(`${basePath}/api/services`);
+        const response = await axios.get(`${basePath}:${port}/api/services`);
         if(response.status === 200)
           {
             
@@ -151,6 +151,7 @@ const ServicesSection = () => {
         {error && (
           <div className="text-center text-lg font-semibold m-4 p-2 text-red-500">
             Cannot load services at this time
+            <p className="text-center">reload page</p>
           </div>
         )}
         { services.length>0 ?( <div className="flex flex-wrap -mx-4">
