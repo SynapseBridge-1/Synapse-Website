@@ -26,15 +26,12 @@ app.use(express.json());
 // Middleware to parse URL-encoded bodies
 app.use(express.urlencoded({ extended: true }));
 
-// Serve static files for the addProject route
-// app.use("/api/addProject", (req, res, next) => {
-//   express.static("../src/assets")(req, res, next);
-// });
+
 
 // Rate limiter middleware
 const limiter = rateLimit({
   windowMs: 1 * 60 * 1000, // 1 minute
-  max: 20, // limit each IP to 20 requests per windowMs
+  max: 60, // limit each IP to 20 requests per windowMs
   message: {
     status: 429,
     message: "Too many requests, please try again later.",
@@ -44,6 +41,12 @@ const limiter = rateLimit({
 
 // Apply rate limiting to all requests
 app.use(limiter);
+
+app.use((req, res, next) => {
+  console.log(`Incoming request from IP: ${req.ip} - ${req.method} ${req.url}`);
+  next();
+});
+
 
 // Validation and sanitization rules
 const contactValidationRules = [
@@ -64,7 +67,7 @@ const client = new MongoClient(databaseURI);
 async function connectToDatabase() {
   try {
     await client.connect();
-
+    console.log("Connected to MongoDB successfully");
     // Define the database and collections
     const db = client.db("synapseBridge");
     const servicesCollection = db.collection("services");
@@ -102,6 +105,7 @@ async function connectToDatabase() {
 
         res.status(200).send(projectsWithImages);
       } catch (error) {
+        console.error("Error retrieving projects:", error);
         res.status(500).json({ message: "Error retrieving projects" });
       }
     });
@@ -153,8 +157,11 @@ async function connectToDatabase() {
     );
 
     // Start the server and listen on the specified port
-    app.listen(port, () => {});
+    app.listen(port, () => {
+      console.log(`Server is running on port ${port}`);
+    });
   } catch (err) {
+    console.error("Failed to connect to the database:", err);
     process.exit(1);
   }
 }
