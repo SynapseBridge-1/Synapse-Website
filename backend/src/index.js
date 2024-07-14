@@ -1,5 +1,6 @@
 // import dotenv from "dotenv";
 // dotenv.config({ path: ".env.development" });
+// dotenv.config({ path: ".env.production" });
 
 import express from "express";
 import { MongoClient } from "mongodb";
