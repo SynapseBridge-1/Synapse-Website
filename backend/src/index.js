@@ -43,11 +43,6 @@ const limiter = rateLimit({
 // Apply rate limiting to all requests
 app.use(limiter);
 
-app.use((req, res, next) => {
-  console.log(`Incoming request from IP: ${req.ip} - ${req.method} ${req.url}`);
-  next();
-});
-
 
 // Validation and sanitization rules
 const contactValidationRules = [
@@ -96,6 +91,7 @@ async function connectToDatabase() {
     // Route to get all projects with embedded images
     app.get("/api/projects", async (req, res) => {
       try {
+        console.log("projects api");
         const projects = await projectsCollection.find({}).toArray();
 
         // Convert each project's binary data to base64 for sending over JSON
@@ -114,6 +110,7 @@ async function connectToDatabase() {
     // Route to get all services
     app.get("/api/services", async (req, res) => {
       try {
+        console.log("services api");
         const services = await servicesCollection
           .find({})
           .project({ _id: 0, name: 1, description: 1 }) // Include name and description
@@ -132,6 +129,7 @@ async function connectToDatabase() {
       validate,
       async (req, res) => {
         try {
+          console.log("contact api");
           const { name, email, message } = req.body;
 
           if (!name || !email || !message) {
@@ -150,9 +148,11 @@ async function connectToDatabase() {
             res.status(200).send("Message sent successfully");
           } catch (error) {
             res.status(500).send("Failed to send message");
+            console.log("failed to send email",error);
           }
         } catch (err) {
           res.status(500).send("Server error!  Sorry for inconvenience");
+          console.log("error:server",err);
         }
       }
     );
