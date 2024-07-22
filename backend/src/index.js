@@ -1,5 +1,5 @@
 // import dotenv from "dotenv";
-// dotenv.config({ path: ".env.development" });
+// dotenv.config({ path: "../.env.development" });
 // dotenv.config({ path: ".env.production" });
 
 import express from "express";
@@ -10,7 +10,6 @@ import rateLimit from "express-rate-limit";
 import { body, validationResult } from "express-validator";
 
 // Get the current file path (ES6 module way)
-
 
 const app = express();
 
@@ -26,9 +25,6 @@ app.use(express.json());
 
 // Middleware to parse URL-encoded bodies
 app.use(express.urlencoded({ extended: true }));
-
-
-
 // Rate limiter middleware
 const limiter = rateLimit({
   windowMs: 1 * 60 * 1000, // 1 minute
@@ -42,7 +38,6 @@ const limiter = rateLimit({
 
 // Apply rate limiting to all requests
 app.use(limiter);
-
 
 // Validation and sanitization rules
 const contactValidationRules = [
@@ -91,6 +86,7 @@ async function connectToDatabase() {
     // Route to get all projects with embedded images
     app.get("/api/projects", async (req, res) => {
       try {
+        
         console.log("projects api");
         const projects = await projectsCollection.find({}).toArray();
 
@@ -148,15 +144,18 @@ async function connectToDatabase() {
             res.status(200).send("Message sent successfully");
           } catch (error) {
             res.status(500).send("Failed to send message");
-            console.log("failed to send email",error);
+            console.log("failed to send email", error);
           }
         } catch (err) {
           res.status(500).send("Server error!  Sorry for inconvenience");
-          console.log("error:server",err);
+          console.log("error:server", err);
         }
       }
     );
-
+    app.get("/api/health", async (req,res) => {
+      console.log("checking server....");
+     return  res.sendStatus(200);
+    });
     // Start the server and listen on the specified port
     app.listen(port, () => {
       console.log(`Server is running on port ${port}`);

@@ -13,12 +13,12 @@ const ProjectsSection = () => {
   useEffect(() => {
     
     const basePath = import.meta.env.VITE_backendURL;
-    const port=import.meta.env.VITE_PORT;
+    // const port=import.meta.env.VITE_PORT;
     const fetchProjects = async (storedData) => {
       try {
         // const lastUpdated = localStorage.getItem(LAST_UPDATED_KEY);
         
-        const response = await axios.get(`${basePath}:${port}/api/projects`);
+        const response = await axios.get(`${basePath}/api/projects`);
        
         
         // Update state and local storage

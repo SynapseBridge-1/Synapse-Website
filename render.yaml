@@ -1,9 +1,12 @@
 services:
   - type: web
-    name: SynapseBridge-Website
+    name: synapseBridge-frontend
     env: static
-    staticPublishPath: dist
+    staticPublishPath: ./dist
     routes:
+     - type: rewrite
+        source: /api/*  # Exclude API routes from being rewritten
+        destination: /api/*  # Keep them as they are
       - type: rewrite
         source: /*
         destination: /index.html

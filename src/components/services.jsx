@@ -34,10 +34,10 @@ const ServicesSection = () => {
   useEffect(() => {
    
     const basePath = import.meta.env.VITE_backendURL;
-    const port=import.meta.env.VITE_PORT;
+    // const port=import.meta.env.VITE_PORT;
     const fetchServices = async () => {
       try {
-        const response = await axios.get(`${basePath}:${port}/api/services`);
+        const response = await axios.get(`${basePath}/api/services`);
         if(response.status === 200)
           {
             
