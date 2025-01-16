@@ -1,9 +1,8 @@
 // import dotenv from "dotenv";
-// dotenv.config({ path: "../.env.development" });
+// dotenv.config({ path: ".env.development" });
 // dotenv.config({ path: ".env.production" });
-
+import { google } from "googleapis";
 import express from "express";
-import { MongoClient } from "mongodb";
 import cors from "cors";
 import nodemailer from "nodemailer";
 import rateLimit from "express-rate-limit";
@@ -14,7 +13,6 @@ import { body, validationResult } from "express-validator";
 const app = express();
 
 // Retrieve database URI and port from environment variables
-const databaseURI = process.env.db_uri;
 const port = process.env.PORT;
 
 // Enable CORS for all routes
@@ -39,6 +37,33 @@ const limiter = rateLimit({
 // Apply rate limiting to all requests
 app.use(limiter);
 
+const oAuth2Client = new google.auth.OAuth2(
+  process.env.CLIENT_ID,
+  process.env.CLIENT_SECRET,
+  process.env.REDIRECT_URI
+);
+
+oAuth2Client.setCredentials({ refresh_token: process.env.REFRESH_TOKEN });
+async function createTransporter() {
+  try {
+    const accessToken = await oAuth2Client.getAccessToken();
+    return nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        type: "OAuth2",
+        user: process.env.EMAIL_USER,
+        clientId: process.env.CLIENT_ID,
+        clientSecret: process.env.CLIENT_SECRET,
+        refreshToken: process.env.REFRESH_TOKEN,
+        accessToken: accessToken.token,
+      },
+    });
+  } catch (error) {
+    console.error("Error creating transporter:", error);
+    throw error;
+  }
+}
+
 // Validation and sanitization rules
 const contactValidationRules = [
   body("name").trim().notEmpty().withMessage("Name is required").escape(),
@@ -51,27 +76,7 @@ const contactValidationRules = [
   body("message").trim().notEmpty().withMessage("Message is required").escape(),
 ];
 
-// Create a new MongoClient instance
-const client = new MongoClient(databaseURI);
-
-// Connect to MongoDB
-async function connectToDatabase() {
-  try {
-    await client.connect();
-    console.log("Connected to MongoDB successfully");
-    // Define the database and collections
-    const db = client.db("synapseBridge");
-    const servicesCollection = db.collection("services");
-    const projectsCollection = db.collection("projects");
-
-    // Set up nodemailer transporter
-    const transporter = nodemailer.createTransport({
-      service: "outlook",
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-      },
-    });
+// Set up nodemailer transporter
 
     // Middleware to handle validation results
     const validate = (req, res, next) => {
@@ -83,41 +88,6 @@ async function connectToDatabase() {
       next();
     };
 
-    // Route to get all projects with embedded images
-    app.get("/api/projects", async (req, res) => {
-      try {
-        
-        console.log("projects api");
-        const projects = await projectsCollection.find({}).toArray();
-
-        // Convert each project's binary data to base64 for sending over JSON
-        const projectsWithImages = projects.map((project) => ({
-          ...project,
-          imageData: project.imageData.toString("base64"),
-        }));
-
-        res.status(200).send(projectsWithImages);
-      } catch (error) {
-        console.error("Error retrieving projects:", error);
-        res.status(500).json({ message: "Error retrieving projects" });
-      }
-    });
-
-    // Route to get all services
-    app.get("/api/services", async (req, res) => {
-      try {
-        console.log("services api");
-        const services = await servicesCollection
-          .find({})
-          .project({ _id: 0, name: 1, description: 1 }) // Include name and description
-          .toArray();
-        res.status(200).json(services);
-        // res.send(services);
-      } catch (error) {
-        res.status(500).json({ message: "Error retrieving services" });
-      }
-    });
-
     // Route to handle contact form submission
     app.post(
       "/api/contact",
@@ -125,13 +95,14 @@ async function connectToDatabase() {
       validate,
       async (req, res) => {
         try {
-          console.log("contact api");
+          // console.log("contact api");
           const { name, email, message } = req.body;
 
           if (!name || !email || !message) {
             return res.status(400).send("All fields are required");
           }
 
+          const transporter = await createTransporter();
           const mailOptions = {
             from: process.env.EMAIL_USER,
             to: process.env.COMPANY_EMAIL,
@@ -143,27 +114,21 @@ async function connectToDatabase() {
             await transporter.sendMail(mailOptions);
             res.status(200).send("Message sent successfully");
           } catch (error) {
+            console.error("Failed to send email:", error);
             res.status(500).send("Failed to send message");
-            console.log("failed to send email", error);
           }
         } catch (err) {
-          res.status(500).send("Server error!  Sorry for inconvenience");
-          console.log("error:server", err);
+          console.error("Server error:", err);
+          res.status(500).send("Server error! Sorry for the inconvenience");
         }
       }
     );
-    app.get("/api/health", async (req,res) => {
-      console.log("checking server....");
-     return  res.sendStatus(200);
+
+    app.get("/api/health", async (req, res) => {
+      // console.log("checking server....");
+      return res.sendStatus(200);
     });
     // Start the server and listen on the specified port
     app.listen(port, () => {
       console.log(`Server is running on port ${port}`);
     });
-  } catch (err) {
-    console.error("Failed to connect to the database:", err);
-    process.exit(1);
-  }
-}
-
-connectToDatabase();

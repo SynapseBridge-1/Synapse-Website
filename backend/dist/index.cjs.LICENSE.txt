@@ -10,7 +10,11 @@ object-assign
  * MIT Licensed
  */
 
+/*! THIS FILE IS AUTO-GENERATED */
+
 /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/facebook/regenerator/blob/main/LICENSE */
+
+/*! safe-buffer. MIT License. Feross Aboukhadijeh <https://feross.org/opensource> */
 
 /**
  * @license
