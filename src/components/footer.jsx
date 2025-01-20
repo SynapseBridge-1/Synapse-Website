@@ -3,7 +3,6 @@ import { FaLinkedin, FaInstagram, FaFacebook } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { scrollToServices } from "./scroll_toServices";
-import { scrollToProjects } from "./scroll_toProjects";
 import { FaXTwitter } from "react-icons/fa6";
 import { scrollToTop } from "./scrolltoTop";
 import { scrollToContact } from "./scrolltoContact";
@@ -15,10 +14,6 @@ const Footer = () => {
     setTimeout(scrollToServices, 100);
   };
 
-  const handleClickProjects = () => {
-    navigate("/about");
-    scrollToProjects;
-  };
 
   const handleClickTop = () => {
     navigate("/");
