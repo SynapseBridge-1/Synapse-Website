@@ -6,7 +6,7 @@ const AboutSection = () => {
       className="relative bg-blue-100 text-blue-900 py-20"
       style={{ backgroundImage: "url('../../images/back.png')", backgroundSize: 'cover', backgroundPosition: 'center' }}
     >
-      <div className="absolute inset-0 bg-gray-900 opacity-50"></div> {/* Overlay */}
+      <div className="absolute inset-0 bg-gray-900 bg-opacity-90"></div> {/* Overlay */}
       <div className="relative container mx-auto px-4">
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold text-white">About Us</h2>
