@@ -5,7 +5,6 @@ import ServicesSection from './services';
 import ContactSection from './c';
 import MissionVisionSection from './misvision';
 import Benefit from './benefits';
-import ProjectSlider from './projectsSlider';
 import SoftwareProcessesSection from './softwareprocesses';
 const Home = () => {
   return (
