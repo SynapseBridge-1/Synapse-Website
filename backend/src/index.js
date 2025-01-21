@@ -95,7 +95,7 @@ const contactValidationRules = [
       validate,
       async (req, res) => {
         try {
-          // console.log("contact api");
+          console.log("contact api");
           const { name, email, message } = req.body;
 
           if (!name || !email || !message) {
