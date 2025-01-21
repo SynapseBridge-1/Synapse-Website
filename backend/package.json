@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "start": "node dist/index.cjs",
+    "start": "node src/index.js",
     "build": "webpack",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
@@ -17,8 +17,9 @@
     "express": "^4.19.2",
     "express-rate-limit": "^7.3.1",
     "express-validator": "^7.1.0",
+    "googleapis": "^144.0.0",
     "mongodb": "^6.8.0",
-    "nodemailer": "^6.9.14",
+    "nodemailer": "^6.9.16",
     "nodemon": "^3.1.4",
     "react": "^18.2.0",
     "react-icons": "^5.2.1",

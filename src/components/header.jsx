@@ -1,8 +1,24 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import '../assets/css/header.css'; // Ensure your CSS file path is correct
-
+import { useNavigate } from 'react-router-dom';
+import { scrollToContact } from './scrolltoContact';
+import { scrollToServices } from './scroll_toServices';
 const Header = () => {
+  const navigate = useNavigate();
+  const handleClickContact = () => {
+    setIsMenuOpen(false);
+    navigate('/');
+    scrollToContact();
+  }
+
+  const handleClickServices = () => { 
+    setIsMenuOpen(false);
+    navigate('/');
+    scrollToServices();
+  }
+
+
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const toggleMenu = () => {
@@ -15,7 +31,7 @@ const Header = () => {
         {/* Logo */}
         <div className="flex items-center">
           <img
-            src="../../images/logo.jpg"
+            src="/images/logo2.png"
             alt="Synapse Bridge Logo"
             className="h-16 w-auto mx-2 border border-black rounded-full"
             style={{ maxHeight: '4rem' }} // Adjust the max height of the image
@@ -39,20 +55,20 @@ const Header = () => {
           >
             Home
           </Link>
-          <Link
-            to="/about"
+          <button
             className="text-gray-300 hover:text-white hover:border-b-2 border-green-50 hover:text-lg"
-            onClick={() => setIsMenuOpen(false)}
+            onClick={handleClickServices}
           >
-            About
-          </Link>
-          <Link
-            to="/contact"
+            Services
+          </button>
+          
+          <button
             className="text-gray-300 hover:text-white hover:border-b-2 border-green-50 hover:text-lg"
-            onClick={() => setIsMenuOpen(false)}
-          >
+            onClick={handleClickContact}
+            >
             Contact
-          </Link>
+            </button>
+          
         </nav>
       </div>
     </header>

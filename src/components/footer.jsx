@@ -3,8 +3,9 @@ import { FaLinkedin, FaInstagram, FaFacebook } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { scrollToServices } from "./scroll_toServices";
-import { scrollToProjects } from "./scroll_toProjects";
 import { FaXTwitter } from "react-icons/fa6";
+import { scrollToTop } from "./scrolltoTop";
+import { scrollToContact } from "./scrolltoContact";
 const Footer = () => {
   const navigate = useNavigate();
 
@@ -13,9 +14,15 @@ const Footer = () => {
     setTimeout(scrollToServices, 100);
   };
 
-  const handleClickProjects = () => {
-    navigate("/about");
-    setTimeout(scrollToProjects, 20);
+
+  const handleClickTop = () => {
+    navigate("/");
+    scrollToTop();
+  };
+
+  const handleClickContact = () => {
+    navigate("/");
+    scrollToContact();
   };
   return (
     <footer className="bg-gray-900 text-white py-10">
@@ -42,25 +49,25 @@ const Footer = () => {
 
               <li>
                 {" "}
-                <Link to="/" className="hover:underline hover:text-orange-500">
+                <button
+                  onClick={handleClickTop}
+                  className="hover:underline hover:text-orange-500"
+                >
                   Home
-                </Link>
+                </button>
               </li>
-              <li>
+              {/* <li>
                 <Link
                   to="/about"
                   className="hover:underline  hover:text-orange-500"
                 >
                   About
-                </Link>
-              </li>
+                </Link> 
+              </li> */}
               <li>
-                <Link
-                  to="/contact"
-                  className="hover:underline hover:text-orange-500"
-                >
+                <button onClick={handleClickContact} className="hover:underline hover:text-orange-500">
                   Contact
-                </Link>
+                </button>
               </li>
               <li>
                 <button
@@ -70,14 +77,14 @@ const Footer = () => {
                   Services
                 </button>
               </li>
-              <li>
+              {/* <li>
                 <button
                   onClick={handleClickProjects}
                   className="hover:underline hover:text-orange-500"
                 >
                   Projects
                 </button>
-              </li>
+              </li> */}
               {/* <li><Link to="/" className="hover:underline">Projects</Link> </li>*/}
             </ul>
           </div>
