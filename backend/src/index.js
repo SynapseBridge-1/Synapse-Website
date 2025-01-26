@@ -1,4 +1,4 @@
-// import dotenv from "dotenv";
+import dotenv from "dotenv";
 // dotenv.config({ path: ".env.development" });
 // dotenv.config({ path: ".env.production" });
 import { google } from "googleapis";
@@ -95,7 +95,7 @@ const contactValidationRules = [
       validate,
       async (req, res) => {
         try {
-          // console.log("contact api");
+          console.log("contact api");
           const { name, email, message } = req.body;
 
           if (!name || !email || !message) {
