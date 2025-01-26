@@ -11,7 +11,7 @@ import { body, validationResult } from "express-validator";
 // Get the current file path (ES6 module way)
 
 const app = express();
-
+app.set('trust proxy', 1); 
 // Retrieve database URI and port from environment variables
 const port = process.env.PORT;
 
