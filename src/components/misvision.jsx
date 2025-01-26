@@ -4,7 +4,7 @@ const MissionVisionSection = () => {
   return (
     // <section className="py-16 bg-gradient-to-br from-purple-50 to-purple-100">
     <section  className="relative bg-blue-100 text-blue-900 py-16"
-    style={{ backgroundImage: "url('/images/back.png')", backgroundSize: 'cover', backgroundPosition: 'center' }}>
+    style={{ backgroundImage: "url('/images/back.webp')", backgroundSize: 'cover', backgroundPosition: 'center' }}>
       <div className="absolute inset-0 bg-gray-700 opacity-65"></div> {/* Overlay */}
       <div className="max-w-6xl mx-auto px-4">
         <div className="grid md:grid-cols-2 gap-8">

@@ -17,7 +17,7 @@ const Benefit = () => {
         {/* Right Section: Image */}
         <div className="lg:w-[75%] mt-10 lg:mt-0 flex justify-center">
           <img
-            src="/images/bg-7.png" // Replace with your rice-related image URL
+            src="/images/bg-7.webp" // Replace with your rice-related image URL
             alt="Rice Adulteration Detection"
             className="rounded-lg shadow-lg w-full h-full"
           />
