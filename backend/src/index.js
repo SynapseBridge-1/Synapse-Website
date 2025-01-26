@@ -117,8 +117,8 @@ const contactValidationRules = [
             console.error("Failed to send email:", error);
             res.status(500).send("Failed to send message");
           }
-        } catch (err) {
-          console.error("Server error:", err);
+        } catch (error) {
+          console.error("Server error:", error);
           res.status(500).send("Server error! Sorry for the inconvenience");
         }
       }
