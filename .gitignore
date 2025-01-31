@@ -24,3 +24,5 @@ dist-ssr
 .env.development
 /backend/.env.development
 /backend/.env.production  
+Dockerfile
+.dockerignore

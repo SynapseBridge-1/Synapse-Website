@@ -149,11 +149,11 @@ const ContactSection = () => {
             </div>
           </div>
           {/* small screen Image Section */}
-          <div className="small_screen mt-4 relative lg:order-1">
+          <div className="small_screen mt-4  bg-sky-300 relative lg:order-1">
             <div className="aspect-w-4 aspect-h-3">
               <img
                 alt="Connect with Synapse Bridge"
-                className="object-cover w-full h-full rounded-lg shadow-md"
+                className="object-cover w-full h-full  bg-slate-100 rounded-lg shadow-md"
                 src="https://cdn.a1.art/assets/images/app_1811317900177637378/1811317900181831681/fd2fa64a-eaa8-45d6-bcf8-7d70ed6a8354.jpeg"
               />
             </div>

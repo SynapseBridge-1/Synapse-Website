@@ -30,7 +30,7 @@ const Footer = () => {
         <div className="flex flex-wrap -mx-4">
           <div className="flex  w-full md:w-1/3 px-4 mb-8 md:mb-0">
             <img
-              src="../../images/logo.jpg"
+              src="../../images/logo2.png"
               alt="Synapse Bridge Logo"
               className=" h-16 w-auto mx-2  border border-black rounded-full"
               style={{ maxHeight: "4rem" }} // Adjust the max height of the image
